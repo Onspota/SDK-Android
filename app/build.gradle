@@ -1,0 +1,80 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
+plugins {
+    id 'com.palantir.git-version' version '0.10.0'
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+
+
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
+android {
+    compileSdkVersion 27
+    buildToolsVersion "27.0.2"
+
+    def details = versionDetails()
+    println(":Git version details - tag: " + details.lastTag + " distance: " + details.commitDistance + " branch: " + details.branchName)
+
+
+    defaultConfig {
+        applicationId "com.onspota.demo"
+        minSdkVersion 15
+        targetSdkVersion 24
+
+        /**
+         * Modify the versionCode when releasing a public version to Google Play
+         */
+        versionCode 43
+        versionName "4.1.43-aar"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.greysonparrelli.permiso:permiso:0.3.0'
+    compile 'com.android.support:appcompat-v7:27.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:design:27.+'
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile 'eu.davidea:flexible-adapter:5.0.0-rc3'
+    testCompile 'junit:junit:4.12'
+    compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true;
+    }
+    implementation project(':onspotsdk')
+}
