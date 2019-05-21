@@ -5,6 +5,10 @@ OnSpot@ SDK for Android (Version 1.17.2)
 OnSpot@ SDK for Android is a client to the OnSpota server scanning the device sensors and responding with events about surrounding spots. 
 The library is distributed as an Android AAR file with size of ~500 Kb.
 
+NOTICE:
+The repository contains a demo app + the SDK module.
+if you need only the SDK module it is located in the onspotsdk foler.
+
 # Android SDK requirements
 
 The minimum Android version for the SDK is Android 5.0 Lollipop (API level 21).
