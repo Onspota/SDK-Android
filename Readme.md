@@ -64,7 +64,10 @@ Importing the library will automatically add all needed permissions to your app 
 
 3. Request granted permissions for Manifest.permission.ACCESS_FINE_LOCATION
 
-4. Start the SDK by simply creating a SDK object and calling one of its 'start' methods:
+4. Onspota SDK can use a foreground service to improove its perfomance and accuracy (recommended!). the foreground service is not active most of the time. it is recommended to enable the use of the foreground service especially on Android 7+. for enabling the foreground service use the 'enableForegroundServiceInfo' method with the app's name and an icon for the status bar (shown only when the foreground service is active. hidden most of the time) . see the sample code below.
+
+
+5. Start the SDK by simply creating a SDK object and calling one of its 'start' methods:
 
 public SdkResult start(String userId); // Uses the application id from the app's manifest.
 public SdkResult start(String userId, String appId); // Uses the provided application-id.
@@ -76,23 +79,34 @@ Application can always stop the SDK by invoking the 'stop' method from any incat
 	// Replace "MyAppId" with the App ID provided to you by onspota.
         // Replace myContext with the current context (use 'this' when starting the sdk from Activity, Service, etc.)
          // See our demo app for more details.
-         OnspotaApi.SdkResult sdkResult = new OnspotaApi(myContext).start("MyUserId", "MyAppId");
+	 
+	 OnspotaApi api = new OnspotaApi(myContext);
+         OnspotaApi.SdkResult sdkResult = api.start("MyUserId", "MyAppId");
+	 
+	if (mForefroundServiceEnable == true) {
+		// Enabling foreground service
+		api.enableForegroundServiceInfo(getString(R.string.app_name), null, R.mipmap.ic_launcher);
+	}
+	else {
+		// Disabling foreground service (default)
+		api.enableForegroundServiceInfo(null, null, 0);
+	}
 
-                    if (sdkResult == OnspotaApi.SdkResult.Ok) {
-                        // SDK was started.
-                    }
-                    else if (sdkResult == OnspotaApi.SdkResult.AndroidVersionNotSupported) {
-                        Log.w(TAG,"OnSpota SDK doesn't support current android os");
-                    }
-                    else if (sdkResult == OnspotaApi.SdkResult.FailedToFind3rdPartyLib) {
-                        Log.e(TAG,"Critical error: OnSpota SDK Failed to find at least one of its required dependencies.");
-                    }
-                    else if (sdkResult == OnspotaApi.SdkResult.Failed) {
-                        Log.e(TAG,"OnSpota SDK Failed to start.");
-                    }
+        if (sdkResult == OnspotaApi.SdkResult.Ok) {
+               // SDK was started.
+        }
+        else if (sdkResult == OnspotaApi.SdkResult.AndroidVersionNotSupported) {
+               Log.w(TAG,"OnSpota SDK doesn't support current android os");
+        }
+        else if (sdkResult == OnspotaApi.SdkResult.FailedToFind3rdPartyLib) {
+              Log.e(TAG,"Critical error: OnSpota SDK Failed to find at least one of its required dependencies.");
+        }
+        else if (sdkResult == OnspotaApi.SdkResult.Failed) {
+              Log.e(TAG,"OnSpota SDK Failed to start.");
+        }
 		
 
-5. Register listener for search responses by onspotasdk
+6. Register listener for search responses by onspotasdk
 
 		@Override
 		public void onResume() {
@@ -106,19 +120,19 @@ Application can always stop the SDK by invoking the 'stop' method from any incat
 		    unregisterReceiver(mEventReceiver);
 		}
 
-6. Obtain a SearchResponse object by the received Intent
+7. Obtain a SearchResponse object by the received Intent
             
 		public void onReceive(Context context, Intent intent) {
 				SearchResponse searchResponse = (SearchResponse) intent.getSerializableExtra(getString(com.onspota.sdk.R.string.intent_search_response));
 
-7. Retrieve surrounding spots, places and incoming events by the SearchResponse object
+8. Retrieve surrounding spots, places and incoming events by the SearchResponse object
 
 		List<PlacesListItem> places = searchResponse.getPlaces();
 		List<SpotSearchResponse> spots = searchResponse.getSpots();
 		List<Event> events = searchResponse.getEvents();
 		
 		
-8. Add location context to custom events:
+9. Add location context to custom events:
 
 OnSpota SDK supports geo-analytic feature that adds location context to app custom events such as button click, screen view, etc. This features enables app owners to understand location asspects of their users interations (e.g app usage inside and near stores and user home). Using this feature is done by invoking the '#sendEvent' method of OnspotaApi object:
 	
