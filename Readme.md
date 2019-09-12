@@ -1,4 +1,4 @@
-OnSpot@ SDK for Android (Version 1.17.2)
+OnSpot@ SDK for Android (Version 1.19.13)
 ========================================
 
 # Information
